@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ciid</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        overflow: hidden;
+      }
+
+      #g {
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="g"></canvas>
+    
+    <script>
+      const canvas = document.querySelector("#g");
+      const { width: w, height: h } = canvas.getBoundingClientRect();
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+
+      let hue = 200;
+
+      class SmoothLine {
+        constructor(options) {
+          this.x0 = options.x;
+          this.y0 = options.y;
+          this.x1 = options.x;
+          this.y1 = options.y;
+          this.fk = options.fk;
+          this.res = options.res;
+          this.vX = 0;
+          this.vY = 0;
+          this.fX = 0;
+          this.fY = 0;
+          this.ok = 0;
+          this.segCount = 10;
+
+          this.ctx = options.ctx;
+        }
+
+        update(_xT, _yT) {
+          if (this.ok == 0) return;
+
+          this.x0 = this.x1;
+          this.y0 = this.y1;
+
+          for (let i = 0; i < this.segCount; i++) {
+            this.fX = (this.x0 - _xT) * this.fk;
+            this.fY = (this.y0 - _yT) * this.fk;
+
+            this.vX -= this.fX;
+            this.vX *= this.res;
+            this.vY -= this.fY;
+            this.vY *= this.res;
+
+            this.x0 += this.vX;
+            this.y0 += this.vY;
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.x0, this.y0);
+            this.ctx.lineTo(this.x1, this.y1);
+            this.ctx.closePath();
+            this.ctx.stroke();
+
+            this.x1 = this.x0;
+            this.y1 = this.y0;
+          }
+        }
+
+        init(_x, _y) {
+          this.x0 = _x;
+          this.y0 = _y;
+          this.x1 = _x;
+          this.y1 = _y;
+          this.vX = 0;
+          this.vY = 0;
+          this.ok = 1;
+        }
+      }
+
+      class CIIDLogo {
+
+        constructor(options) {
+          this.ctx = options.ctx;
+          this.lineCount = options.count;
+
+          // this.ctx.globalCompositeOperation = 'multiply'
+          this.ctx.lineWidth = 1;
+          // this.ctx.strokeStyle = "#0099ffcc";
+          this.ctx.fillStyle = "#000";
+
+          this.lastX = 0;
+          this.lastY = 0;
+          this.dist = 0;
+          this.angl = 0;
+          this.resL = [0.1, 0.95]; // [0.1, 0.95] -> [0.9, 0.95]
+          this.fkL = [0.02, 0.01];
+          this.lines = [];
+          this.doinit = true;
+
+          this.mouseX = 0;
+          this.mouseY = 0;
+
+          for (let ln = 0; ln < this.lineCount; ln++) {
+            const pct = ln / (this.lineCount - 1.0);
+            const fKN = this.fkL[0] * pct + this.fkL[1] * (1 - pct);
+            const resN = this.resL[0] * pct + this.resL[1] * (1 - pct);
+            this.lines.push(
+              new SmoothLine({
+                x: this.mouseX,
+                y: this.mouseY,
+                fk: fKN,
+                res: resN,
+                ctx: this.ctx,
+              })
+            );
+          }
+
+          document.addEventListener("mousemove", (e) => {
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
+          });
+
+          this.update();
+        }
+
+        draw() {
+          if (this.mouseX + this.mouseY === 0) return;
+
+          if (this.doinit) {
+            this.lastX = this.mouseX;
+            this.lastY = this.mouseY;
+            for (let ln = 0; ln < this.lineCount; ln++) {
+              this.lines[ln].init(this.mouseX, this.mouseY);
+            }
+            this.doinit = false;
+          } else {
+            const cosAngl = Math.cos(this.angl);
+            const sinAngl = Math.sin(this.angl);
+            const l = 1 + this.dist * 0.8;
+            const xMax = this.mouseX - cosAngl * l;
+            const yMax = this.mouseY + sinAngl * l;
+            const xMin = this.mouseX + cosAngl * l;
+            const yMin = this.mouseY - sinAngl * l;
+
+            for (let ln = 0; ln < this.lineCount; ln++) {
+              var t = ln / (this.lineCount - 1.0);
+              this.lines[ln].update(
+                xMax * t + xMin * (1 - t),
+                yMax * t + yMin * (1 - t)
+              );
+            }
+          }
+        }
+
+        update() {
+          const deltaX = this.mouseX - this.lastX;
+          const deltaY = this.mouseY - this.lastY;
+          this.dist =
+            this.dist * 0.6 +
+            Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) * 0.4;
+          this.angl = Math.atan2(deltaX, deltaY);
+
+          // trails!
+          // this.ctx.fillRect(0,0,w, h);
+
+          this.draw();
+
+          this.lastX = this.lastX * 0.5 + this.mouseX * 0.5;
+          this.lastY = this.lastY * 0.5 + this.mouseY * 0.5;
+
+          this.ctx.strokeStyle = `hsl(${hue%360}, 100%, 50%, 10%)`;
+          // alpha!
+          // hue rotate!
+
+
+
+          requestAnimationFrame(this.update.bind(this));
+        }
+      }
+
+      const sketch = new CIIDLogo({ count: 50, ctx: ctx });
+    </script>
+  </body>
+</html>

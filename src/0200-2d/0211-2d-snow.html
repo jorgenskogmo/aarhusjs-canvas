@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2d</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        overflow: hidden;
+      }
+
+      #g {
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="g"></canvas>
+    
+    <script>
+      
+      
+var canvas = document.getElementById("g");
+var c = canvas.getContext("2d");
+
+var numStars = 20;
+var radius = 20;
+
+
+var focalLength = canvas.width;
+var centerX, centerY;
+var stars = [], star;
+var i;
+var animate = false;
+var hue = 0;
+
+
+function initializeStars(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  centerX = canvas.width / 2;
+  centerY = canvas.height / 2;
+  
+  stars = [];
+  for(i = 0; i < numStars; i++){
+    star = {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      z: Math.random() * canvas.width,
+      c: Math.random() * 360
+    };
+    stars.push(star);
+  }
+}
+
+function moveStars(){
+  for(i = 0; i < numStars; i++){
+    star = stars[i];
+    star.z--;
+    
+    if(star.z <= 0){
+      star.z = canvas.width;
+    }
+  }
+}
+
+function drawStars(){
+  var pixelX, pixelY, pixelRadius;
+  
+  // // Resize to the screen
+  // if(canvas.width != window.innerWidth || canvas.width != window.innerWidth){
+  //   canvas.width = window.innerWidth;
+  //   canvas.height = window.innerHeight;
+  //   // initializeStars();
+  // }
+  
+  c.fillStyle = "black";
+  c.fillRect(0,0, canvas.width, canvas.height);
+  c.fillStyle = "white";
+  
+  for(i = 0; i < numStars; i++){
+    star = stars[i];
+    
+    pixelX = (star.x - centerX) * (focalLength / star.z);
+    pixelX += centerX;
+    pixelY = (star.y - centerY) * (focalLength / star.z);
+    pixelY += centerY;
+    pixelRadius = radius * (focalLength / star.z);
+
+    // c.fillStyle = `hsl(${star.c},100%,50%)`;
+
+    c.beginPath();
+    c.arc(pixelX, pixelY, pixelRadius, 0, 2 * Math.PI);
+    c.fill();
+  }
+}
+
+function update(){
+  moveStars();
+  drawStars();
+  requestAnimationFrame(update);
+}
+
+canvas.addEventListener("mousemove",function(e){
+  focalLength = e.x;
+});
+
+initializeStars();
+update();
+
+    </script>
+  </body>
+</html>

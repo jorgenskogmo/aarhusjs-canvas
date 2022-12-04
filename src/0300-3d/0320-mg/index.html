@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>mg</title>
+    <link rel="stylesheet" href="lib/style.css" />
+    <script src="lib/T84-three.js"></script>
+    <script type="text/javascript" src="lib/tween.min.js"></script>
+  </head>
+  <body>
+    <div id="container"></div>
+
+    <!-- note: http://127.0.0.1:8080 -->
+
+    <script type="module">
+      import { loadModel } from "./extglobe-loader.js";
+      import { setup } from "./stage.js";
+
+      const { scene, camera, renderer } = setup({ el: "#container" });
+      const { model, countries } = loadModel();
+
+      const group = new THREE.Object3D();
+      const globe = group.add(model);
+      scene.add(group);
+
+      const update = (time) => {
+        TWEEN.update(time);
+        group.rotateY(-0.003);
+        renderer.render(scene, camera);
+        requestAnimationFrame(update);
+      };
+
+      const randomizeExtrusions = () => {
+        countries.forEach((c, i) => {
+          new TWEEN.Tween(c.material.uniforms.scale)
+            .to({ value: Math.random() }, 500)
+            .easing(TWEEN.Easing.Cubic.Out)
+            .start();
+        });
+      };
+
+      // begin
+      setInterval(() => {
+        randomizeExtrusions(); // #1
+        // #1: material -> cm1
+        // #2: extr
+        // #3: shader
+      }, 1000);
+
+      update();
+    </script>
+  </body>
+</html>
