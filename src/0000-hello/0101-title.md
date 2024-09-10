@@ -1,31 +1,74 @@
-# Posh intro
-
-```js
-`
-> At a point where we, in the webdev community, are faced with
-> "So you want to speed up your site? Ship less JavaScript.",
-> focus is now moving from JS- to HTML-frontend.
->
-> So, when Jakob asked me to throw a session at aarhusJS,
-> our recent work on WebComponents for the LEGO DesignSystem
-> was tempting - web-native elements! Platform! Decentralized JS!
->
-> But realized I wanted to center the talk on a HTML element
-> that really does NOTHING without JavaScript...
-> You know, to argue our place in the world ;-)
->
-
->
 
 ```
+............................................................................
+............................................................................
+............................................................................
+.....................................,..................,....,..............
+....................*(..............,#,...........*#########%(,.............
+.................../(((............,(((...........*##############*..........
+..................((((((.........,,(((((,.........*####..,.../#####.........
+.................#(((((((..,.....*(((((((*........*####.......(####.........
+................(#((,.((((,.....*(((/.((((/.......*####.......####%.........
+...............#(((,...((((..../(((/,..(((((......*####((((#######..........
+...........,..#(((,.....((.,../(((/.....(((((.....*############,............
+.............###(#(((((((....(((((((((((((((((....*####....#####*...........
+............##(#,..........,((((/.........(((((,,.*(###,....,#####,.........
+................,........,.......................,..,.......................
+..........................................................,**...............
+..........,####/........./((((...,((((,.....@@@@&.....@@@@@@@@@@@...........
+..........,####/........./((((...,((((......@@@@&...,@@@@%...(@@(...........
+..........,####/........./((((...,(((.......@@@@&.,.*@@@@#..................
+..........,####/........./((((...,((........@@@@&..../@@@@@@@&*,............
+..........,##########(((((((((...,(.........@@@@&.....,.#@@@@@@@@@..........
+..........,##############(((((...,...,......@@@@&,...,,....,.*@@@@@*........
+..........,####/........./((((.......(&.....@@@@%....%@&......,@@@@(........
+..........,####/........./((((.....@@@@@@@@@@@@@.,..@@@@@@@@@@@@@@@.........
+..........,####/........./#(((.....,,(@@@@@@@&....,..,,&@@@@@@@@/...........
+...........................,.............................,..................
+............................................................................
+............................................................................
+```
+
+
+> Title: 	Canvas
+
+> Abstract: An HTML Element that does **nothing** without JavaScript!?
+
+> Speaker:  Jørgen Skogmo
+
+> Bio: 		Jørgen is a creative coder, exploring interactive experiences through software. 
+> 			Having worked internationally for 20+ years (old hat!)
+>			he brings experience and curiosity to our loved web,
+>			currently as a frontend dev at Jysk and CTO of a Web3 stealth-mode startup
+>			through his design shop DearStudio.
+>	
+>			dearstudio.dk
+
+
 
 # Canvas
 
 
-3 things:
+4 things:
 
-- The Canvas element, and how its a DOM el as we know'em
-- The 2D drawing api
-- The 3D drawing api
+- The Canvas **element**, a DOM elm as we know'em
+	
+	Fun fact: Contributed by Apple (for the Dashboard feature of Mac OS X 10.4 "Tiger")
 
-and we'll not touch how it can use offscreen buffers, workers, RTCPeerConnections, 
+
+- The **2D** drawing api
+
+	Fun fact: In Chrome, this is powered by Skia (which also powers Flutter etc)
+
+
+- The **3D** drawing api
+
+	Fun fact: Started by Mozilla in 2006 (first release 2011)
+	Uses WebGL (a subset of the OpenGL ES (Embedded Systems) spec, which is a subset of OpenGL...)
+
+
+- Integration with other HTML elements
+
+
+
+(we'll *not* touch on `offscreen buffers + web-workers`, `RTCPeerConnections`, `shared array buffers` etc... - this time(?))

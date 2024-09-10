@@ -23,6 +23,8 @@
   </head>
   <body>
     <canvas id="g"></canvas>
+
+    <img id="ellipse" src="e-64-w-10.png" style="opacity: 0;" />
     
     <script>
       
@@ -30,9 +32,12 @@
 var canvas = document.getElementById("g");
 var c = canvas.getContext("2d");
 
-var numStars = 20;
+
+
+var numStars = 2000;
 var radius = 20;
 
+var ellipse = document.getElementById("ellipse");
 
 var focalLength = canvas.width;
 var centerX, centerY;
@@ -45,6 +50,8 @@ var hue = 0;
 function initializeStars(){
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+
+
 
   centerX = canvas.width / 2;
   centerY = canvas.height / 2;
@@ -82,24 +89,45 @@ function drawStars(){
   //   // initializeStars();
   // }
   
+  c.globalCompositeOperation = 'source-over'; // default
   c.fillStyle = "black";
   c.fillRect(0,0, canvas.width, canvas.height);
   c.fillStyle = "white";
+
+  // c.globalCompositeOperation = 'screen'
+  
+
+  // #2 z-sorting
+  stars.sort( (a, b) => a.z > b.z ? -1 : 1);
+
   
   for(i = 0; i < numStars; i++){
     star = stars[i];
-    
+      
     pixelX = (star.x - centerX) * (focalLength / star.z);
     pixelX += centerX;
     pixelY = (star.y - centerY) * (focalLength / star.z);
     pixelY += centerY;
     pixelRadius = radius * (focalLength / star.z);
 
-    // c.fillStyle = `hsl(${star.c},100%,50%)`;
+    // #1 - set color
+    c.fillStyle = `hsl(${star.c},100%,100%)`;
 
-    c.beginPath();
-    c.arc(pixelX, pixelY, pixelRadius, 0, 2 * Math.PI);
-    c.fill();
+    // console.log( star.z / canvas.width )
+    // const alpha = star.z / canvas.width;
+    // c.fillStyle = `hsla(${star.c},100%,50%,${ 0.9-alpha})`;
+    
+    // #3 use image (enable mouse first)
+    // c.beginPath();
+    // c.arc(pixelX, pixelY, pixelRadius, 0, 2 * Math.PI);
+    // c.fill();
+
+    
+    // c.globalAlpha = Math.max(0, 0.9-alpha);
+    c.drawImage(ellipse, pixelX, pixelY, pixelRadius, pixelRadius);
+
+    // #4 - fix offset
+    // c.drawImage(ellipse, pixelX-pixelRadius/2, pixelY-pixelRadius/2, pixelRadius, pixelRadius);
   }
 }
 

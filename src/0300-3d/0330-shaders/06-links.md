@@ -3,8 +3,7 @@
 ## Anatole Duprat
 
 
-Just: https://www.shadertoy.com/user/XT95
-
+https://www.shadertoy.com/user/XT95
 
 
 

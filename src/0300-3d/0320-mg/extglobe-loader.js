@@ -27,6 +27,7 @@ export const loadModel = () => {
     fragmentShader: normalShaderSource,
   });
 
+
   const cm = cm2; // #1
 
   const model = new THREE.Object3D();

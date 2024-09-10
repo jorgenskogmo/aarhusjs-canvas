@@ -26,8 +26,9 @@
         display: flex;
         width: 400px;
         height: 400px;
-        border: 100px solid #f00;
-/*        border-radius: 100%;*/
+        border: 100px solid #09f;
+        /* border-radius: 100%;*/
+        image-rendering: pixelated;
       }
     </style>
   </head>
@@ -36,13 +37,16 @@
       <canvas id="g"></canvas>
     </div>
     <script>
-      
+
       const canvas = document.querySelector("#g");
       
-      const { width: w, height: h } = canvas.getBoundingClientRect();
-      // const { width: _w, height: _h } = canvas.getBoundingClientRect();
-      // const w = _w/2;
-      // const h = _h/2;
+      const { width: sw, height: sh } = canvas.getBoundingClientRect();
+      
+      // # 2 - after walkthrough
+      const resolution = 20;
+      
+      const w = sw/resolution;
+      const h = sh/resolution;
 
       canvas.width = w;
       canvas.height = h;
@@ -52,24 +56,29 @@
       // the size of the drawing context will be the size of the canvas
 
       // set a color
-      ctx.fillStyle = "#000";
+      ctx.fillStyle = "#f0f";
       ctx.fillRect(0, 0, w, h);
 
-      // pick another color, draw with it
-      ctx.fillStyle = "#030";
-      const size = w/4;
+      // pick a color, draw with it
+
+
+      
+      const size = w*0.9;
       const center = {x:w/2, y:h/2};
-      ctx.fillRect(center.x-size, center.y-size, size*2, size*2);
+
+      ctx.fillStyle = "#fff";
+      // ctx.fillRect(center.x-size/2, center.y-size/2, size, size);
       
       // draw a circle
       ctx.beginPath();
-      // center=(50,50) radius=25 angle=0 to ?
-      ctx.arc(center.x, center.y, size, 0, 360);
-      // Tau anyone? https://tauday.com/
-
-      ctx.strokeStyle = "#fff";
+      // cx, cy, radius, start-angle, end-angle
+      ctx.arc(center.x, center.y, size/2, 0, 2*Math.PI );
+      // Tau anyone? https://tauday.com/ https://tauday.com/tau-manifesto
+      ctx.strokeStyle = "#000";
       ctx.lineWidth = 1;
+      
       ctx.stroke();
+      
 
       // note that the width and height can be sat for both
       // the display size of the element,
